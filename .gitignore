@@ -142,3 +142,4 @@ dmypy.json
 
 # by link
 datasets
+!isegm/data/datasets
