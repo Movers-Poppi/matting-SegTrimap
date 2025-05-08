@@ -31,8 +31,12 @@
 -	Ubuntu 20.04
 -	CUDA 12.1
 
-```
-pip3 install -r requirements.txt
+```bash
+# for movers server, install torch first
+pip install torch==2.4.1 torchvision==0.19.1 --index-url https://download.pytorch.org/whl/cu121
+
+# and then
+pip install -r requirements.txt
 ```
 
 ## Download

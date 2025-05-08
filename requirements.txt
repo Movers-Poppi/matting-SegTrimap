@@ -1,6 +1,7 @@
-torch==2.4.1+cu121
-torchvision==0.19.1+cu121
-albumentations==0.5.2
+# torch==2.4.1
+# torchvision==0.19.1
+tensorboard
+albumentations
 Cython==0.29.32
 easydict==1.9
 einops==0.8.1
@@ -10,11 +11,11 @@ matplotlib==3.3.4
 mmcv==1.6.2
 numpy==1.24.3
 opencv_python_headless==4.11.0.86
-pandas==2.2.3
+pandas==2.0.3
 pavi==0.0.1
 Pillow==9.5.0
 PyYAML==6.0
-scipy==1.15.2
+scipy==1.10.1
 timm==0.6.11
 tqdm==4.67.1
 yacs==0.1.8
