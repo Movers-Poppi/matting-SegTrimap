@@ -89,6 +89,7 @@ def main(args):
     ckpt = torch.load(args.ckpt_path, map_location='cpu')
     model.load_state_dict(ckpt['state_dict'], strict=False)
     interpolate_pos_embed_inference(model.backbone, infer_img_size=infer_img_size, device='cpu')
+    model.cuda()
     model.eval()
 
     test_augmentator = Compose([
@@ -106,8 +107,8 @@ def main(args):
 
     with torch.no_grad():
         for i, batch in enumerate(tqdm(testloader)):
-            image = batch['images']          # [B, 3, H, W]
-            seg_mask = batch['seg_mask']     # [B, 1, H, W]
+            image = batch['images'].cuda()          # [B, 3, H, W]
+            seg_mask = batch['seg_mask'].cuda()     # [B, 1, H, W]
             gt_trimap = batch['instances']   # [B, H, W]
             output = model(image, seg_mask)
             pred = output['instances']      # [B, 3, H, W]
