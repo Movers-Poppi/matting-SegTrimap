@@ -191,10 +191,13 @@ class ISTrainer(object):
                                    global_step=global_step)
                 loss_msg = f'Epoch {epoch}, training loss {train_loss/(i+1):.6f}'
 
+                if 'instance_loss/ce_loss' in losses_logging:
+                    loss_msg += f", ce {losses_logging['instance_loss/ce_loss']:.6f}"
                 if 'instance_loss/focal_loss' in losses_logging:
                     loss_msg += f", focal {losses_logging['instance_loss/focal_loss']:.6f}"
                 if 'instance_loss/dt_loss' in losses_logging:
                     loss_msg += f", dt {losses_logging['instance_loss/dt_loss']:.6f}"
+                
 
                 tbar.set_description(loss_msg)
                 # tbar.set_description(f'Epoch {epoch}, training loss {train_loss/(i+1):.4f}')
