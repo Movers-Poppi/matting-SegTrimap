@@ -11,7 +11,7 @@ class AIM500TrimapDataset(ISDataset):
         self.dataset_path = Path(dataset_path)
         self.split = split
         self.image_dir = self.dataset_path / 'original'
-        self.mask_dir = self.dataset_path / 'alpha'
+        self.mask_dir = self.dataset_path / 'mask'
         self.trimap_dir = self.dataset_path / 'trimap'
         self.dataset_samples = sorted([p.stem for p in self.image_dir.glob('*.jpg')])
 
