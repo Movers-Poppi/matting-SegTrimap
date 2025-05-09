@@ -86,7 +86,7 @@ def main(args):
     os.makedirs(save_dir, exist_ok=True)
 
     model = build_model(infer_img_size)
-    ckpt = torch.load(args.ckpt_path, map_location='cpu')
+    ckpt = torch.load(args.ckpt_path, map_location='cpu', weights_only=False)
     model.load_state_dict(ckpt['state_dict'], strict=False)
     interpolate_pos_embed_inference(model.backbone, infer_img_size=infer_img_size, device='cpu')
     model.cuda()
