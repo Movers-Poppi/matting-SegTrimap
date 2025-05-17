@@ -2,7 +2,8 @@
 
 # export CUDA_VISIBLE_DEVICES=0  
 
-WEIGHT_PATH="/home/kjk/matting/SegTrimap/output/loss/composition_p3m10k_am2k_trimap_vit_huge448_focalloss_dtloss/001/checkpoints/last_checkpoint.pth"
+#WEIGHT_PATH="/home/kjk/matting/SegTrimap/output/loss/composition_p3m10k_am2k_trimap_vit_huge448_focalloss_dtloss/001/checkpoints/last_checkpoint.pth"
+WEIGHT_PATH="/home/kjk/matting/SegTrimap/output/loss/all_datasets_huge448_celoss_focalloss/000/checkpoints/020.pth"
 COMPOSITION_PATH="./datasets/Seg2TrimapDataset/Composition-1k-testset"
 P3M500_PATH="./datasets/2.P3M-10k/P3M-10k/validation/P3M-500-NP"
 AIM500_PATH="./datasets/Seg2TrimapDataset/AIM-500"
