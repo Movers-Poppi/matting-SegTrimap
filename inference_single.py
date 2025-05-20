@@ -144,7 +144,7 @@ def main(sample_path, image_size=(448, 448)):
     vis = visualize_trimap(trimap_resized, sample)
 
     cv2.imwrite(os.path.join(sample_path, 'trimap.png'), trimap_resized)
-    cv2.imwrite(os.path.join(sample_path, 'vis.png'), vis)
+    cv2.imwrite(os.path.join(sample_path, 'vis_trimap.png'), vis)
 
 if __name__ == '__main__':
     main('test_data/dogs', (448, 448))
