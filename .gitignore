@@ -143,3 +143,4 @@ dmypy.json
 # by link
 datasets
 !isegm/data/datasets
+test_data
