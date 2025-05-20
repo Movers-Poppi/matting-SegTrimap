@@ -11,9 +11,9 @@ from isegm.model.is_trimap_plaintvit_model_noposembed import NoPosEmbedTrimapPla
 import torchvision.transforms as T
 import albumentations as A
 
-def build_model(infer_img_size):
+def build_model(image_size):
     backbone_params = dict(
-        img_size=infer_img_size,
+        img_size=image_size,
         patch_size=(14, 14),
         in_chans=3,
         embed_dim=1280,
@@ -51,8 +51,8 @@ def build_model(infer_img_size):
 
     return model
 
-def load_model(infer_img_size, checkpoint_path):
-    model = build_model(infer_img_size)
+def load_model(checkpoint_path, image_size):
+    model = build_model(image_size)
 
     ckpt = torch.load(checkpoint_path, weights_only=False)
     state_dict = ckpt['state_dict']
@@ -66,18 +66,19 @@ def load_model(infer_img_size, checkpoint_path):
 
     return model
 
-def load_sample(image_size, sample_path):
+def load_sample(sample_path, image_size):
     image = cv2.imread(glob.glob(os.path.join(sample_path, 'image.*'))[0],
                        cv2.IMREAD_COLOR_RGB)
     mask = cv2.imread(os.path.join(sample_path, 'mask.png'),
                        cv2.IMREAD_GRAYSCALE)
-    h, w = mask.shape
-    bboxes = [(0, 0, w, h, 0),]
+    hm, wm = mask.shape
+    bboxes = [(0, 0, wm, hm, 0),]
     sample_original = dict(image=image, mask=mask, bboxes=bboxes)
     
+    wi, hi = image_size
     transform_a = A.Compose([
-        A.LongestMaxSize(max_size=image_size),
-        A.PadIfNeeded(min_height=image_size, min_width=image_size, border_mode=0),],
+        A.LongestMaxSize(max_size=max(wi, hi)),
+        A.PadIfNeeded(min_height=hi, min_width=wi, border_mode=0),],
         bbox_params=A.BboxParams(format="coco"))
     to_tensor = T.ToTensor()
     sample_transformed = transform_a(**sample_original)
@@ -99,14 +100,14 @@ def pred_to_trimap(y_pred):
 
 def resize_trimap(trimap, image_size, sample):
     # resize trimap to input size
-    trimap = cv2.resize(trimap, (image_size, image_size))
+    trimap = cv2.resize(trimap, image_size)
 
     # unpad (crop)
     xt, yt, wt, ht, _ = sample['transformed']['bboxes'][0]
     xt, yt, wt, ht = map(round, [xt, yt, wt, ht])
     trimap = trimap[yt:yt+ht, xt:xt+wt]
 
-    # resize
+    # resize and refine
     _, _, wo, ho, _ = sample['original']['bboxes'][0]
     trimap = cv2.resize(trimap, (wo, ho), cv2.INTER_LINEAR_EXACT)
     unknown_idx = (trimap > 0) & (trimap < 255)
@@ -126,9 +127,9 @@ def visualize_trimap(trimap, sample, alpha=0.3):
     vis = cv2.addWeighted(image, 1 - alpha, trimap_color, alpha, 0)
     return vis
 
-def main(image_size, sample_path):
-    model = load_model((image_size, image_size), 'weight/054.pth')
-    sample = load_sample(image_size, sample_path)
+def main(sample_path, image_size=(448, 448)):
+    model = load_model('weight/054.pth', image_size)
+    sample = load_sample(sample_path, image_size)
 
     with torch.no_grad():
         image = sample['transformed']['image'].unsqueeze(0).cuda()
@@ -146,4 +147,4 @@ def main(image_size, sample_path):
     cv2.imwrite(os.path.join(sample_path, 'vis.png'), vis)
 
 if __name__ == '__main__':
-    main(448, 'test_data/dogs')
+    main('test_data/dogs', (448, 448))
